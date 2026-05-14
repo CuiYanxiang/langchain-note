@@ -21,6 +21,7 @@ from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
+
 # ============================================================
 # 1.1 & 1.2 init_chat_model —— 统一初始化 & Provider
 # ============================================================
@@ -42,7 +43,7 @@ def demo_basic_chat():
     # 构建消息（System + Human）
     messages = [
         SystemMessage(content="你是一个乐于助人的 AI 助手，请用中文回答。"),
-        HumanMessage(content="请用 3 个要点总结人工智能的三大伦理挑战。")
+        HumanMessage(content="请用 3 个要点总结人工智能的三大伦理挑战。"),
     ]
 
     # 调用模型
@@ -58,7 +59,9 @@ def demo_basic_chat():
     print(f"   - 输出: {response.usage_metadata.get('output_tokens', 'N/A')} tokens")
     print(f"   - 总计: {response.usage_metadata.get('total_tokens', 'N/A')} tokens")
 
-    chat_model = ChatOpenAI(base_url=os.getenv("OPENAI_BASE_URL"), model=os.getenv("OPENAI_MODEL"))
+    chat_model = ChatOpenAI(
+        base_url=os.getenv("OPENAI_BASE_URL"), model=os.getenv("OPENAI_MODEL")
+    )
 
     print(f"✅ 初始化 ChatOpenAI 模型: {chat_model.model_name}")
 
@@ -179,7 +182,7 @@ def demo_sync_stream():
     collected_chunks = []
     for i, chunk in enumerate(model.stream("请用三句话介绍 Python 语言的特点。")):
         # 每个 chunk 也是 AIMessage 类型的子类（AIMessageChunk）
-        text_piece = chunk.text if hasattr(chunk, 'text') else chunk.content
+        text_piece = chunk.text if hasattr(chunk, "text") else chunk.content
         if text_piece:
             print(text_piece, end="", flush=True)
             collected_chunks.append(text_piece)
@@ -216,7 +219,7 @@ async def demo_async_stream():
     # astream() 返回异步生成器
     chunk_count = 0
     async for chunk in model.astream("什么是异步编程？请简短回答。"):
-        text_piece = chunk.text if hasattr(chunk, 'text') else chunk.content
+        text_piece = chunk.text if hasattr(chunk, "text") else chunk.content
         if text_piece:
             print(text_piece, end="", flush=True)
             chunk_count += 1
@@ -243,10 +246,12 @@ def demo_multi_message():
     )
 
     messages = [
-        SystemMessage(content=(
-            "你是一个专业的 Python 导师。"
-            "回答时使用中文，保持简洁，每个回答不超过 3 句话。"
-        )),
+        SystemMessage(
+            content=(
+                "你是一个专业的 Python 导师。"
+                "回答时使用中文，保持简洁，每个回答不超过 3 句话。"
+            )
+        ),
         HumanMessage(content="解释一下列表推导式。"),
     ]
     response = model.invoke(messages)
@@ -255,9 +260,11 @@ def demo_multi_message():
     # Token 用量
     if response.usage_metadata:
         um = response.usage_metadata
-        print(f"Token 用量: 输入={um['input_tokens']}, "
-              f"输出={um['output_tokens']}, "
-              f"总计={um['total_tokens']}")
+        print(
+            f"Token 用量: 输入={um['input_tokens']}, "
+            f"输出={um['output_tokens']}, "
+            f"总计={um['total_tokens']}"
+        )
 
     print()
 
@@ -296,6 +303,7 @@ def model_demo():
     for chunk in model.stream([HumanMessage(content=prompt_stream)]):
         print(chunk.content, end="", flush=True)
     print("\n")
+
 
 # ============================================================
 # 主入口
